@@ -1,0 +1,101 @@
+unit Arquivos;
+
+interface
+
+uses
+  System.SysUtils, System.Classes, Data.DB, IBX.IBDatabase, Inifiles,
+  IBX.IBCustomDataSet, IBX.IBQuery, FireDAC.Stan.Intf, FireDAC.Stan.Option,
+  FireDAC.Stan.Error, FireDAC.UI.Intf, FireDAC.Phys.Intf, FireDAC.Stan.Def,
+  FireDAC.Stan.Pool, FireDAC.Stan.Async, FireDAC.Phys, FireDAC.Phys.FB,
+  FireDAC.Phys.FBDef, FireDAC.VCLUI.Wait, FireDAC.Stan.Param, FireDAC.DatS,
+  FireDAC.DApt.Intf, FireDAC.DApt, FireDAC.Comp.DataSet, FireDAC.Comp.Client;
+
+type
+  TDM = class(TDataModule)
+    IBT_LCDPR: TIBTransaction;
+    IBD_LCDPR: TIBDatabase;
+    IBDS_Cidades: TIBDataSet;
+    DS_Cidade: TDataSource;
+    IBDS_Imoveis: TIBDataSet;
+    IBQ_pesquisa: TIBQuery;
+    IBD_SISFAZ: TIBDatabase;
+    IBT_SISFAZ: TIBTransaction;
+    IBQ_PesqSisfaz: TIBQuery;
+    IBDS_Contribuiente: TIBDataSet;
+    DS_Contribuiente: TDataSource;
+    IBDS_MovtoDupl: TIBDataSet;
+    DS_MovtoDupl: TDataSource;
+    IBDS_Parceiros: TIBDataSet;
+    DS_Parceiros: TDataSource;
+    IBDS_ImoveisParc: TIBDataSet;
+    DS_ImoveisParc: TDataSource;
+    DS_IBQ_PesqSisfaz: TDataSource;
+    IBQ_pesquisa1: TIBQuery;
+    bd_lcdpr: TFDConnection;
+    procedure DataModuleCreate(Sender: TObject);
+    procedure IBDS_ImoveisAfterDelete(DataSet: TDataSet);
+    procedure DataModuleDestroy(Sender: TObject);
+  private
+     alias, sisfaz_f, sisfaz_t, slocal :String;
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  DM: TDM;
+
+implementation
+
+{%CLASSGROUP 'Vcl.Controls.TControl'}
+
+{$R *.dfm}
+
+procedure TDM.DataModuleCreate(Sender: TObject);
+VAR
+  inifile : Tinifile;
+  tslista : TStringList;
+begin
+  bd_lcdpr.Params.LoadFromFile('C:\BANCO DE DADOS\bd_sis.ini');
+  bd_lcdpr.Connected:= true;
+
+  tslista := tstringlist.create;
+  inifile := tinifile.create('C:\WINDOWS\SISLIVROCAIXA.INI');
+  inifile.readsectionvalues('CONFIGURACAO_SISTEMA', tslista);
+  Alias := tslista.values['ALIAS'];
+  slocal    := tslista.values['local'];
+
+  IBD_LCDPR.Close;
+  IBD_LCDPR.databasename := '';
+  IBD_LCDPR.databasename := alias;
+  IBD_LCDPR.Open;
+
+  if slocal = 'FARTURA' then
+  begin
+    SISFAZ_F  := tslista.values['SISFAZ_F'];
+    IBD_SISFAZ.Close;
+    IBD_SISFAZ.databasename := '';
+    IBD_SISFAZ.databasename := SISFAZ_F;
+    IBD_SISFAZ.Open;
+  end;
+  if slocal = 'TAGUAI' then
+  begin
+    SISFAZ_T  := tslista.values['SISFAZ_T'];
+    IBD_SISFAZ.Close;
+    IBD_SISFAZ.databasename := '';
+    IBD_SISFAZ.databasename := SISFAZ_T;
+    IBD_SISFAZ.Open;
+  end;
+end;
+
+procedure TDM.DataModuleDestroy(Sender: TObject);
+begin
+  bd_lcdpr.Connected:= false;
+end;
+
+procedure TDM.IBDS_ImoveisAfterDelete(DataSet: TDataSet);
+begin
+  DM.IBT_LCDPR.CommitRetaining;
+end;
+
+end.

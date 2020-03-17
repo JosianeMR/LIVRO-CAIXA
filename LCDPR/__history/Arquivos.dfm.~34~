@@ -1,0 +1,416 @@
+object DM: TDM
+  OldCreateOrder = False
+  OnCreate = DataModuleCreate
+  OnDestroy = DataModuleDestroy
+  Height = 347
+  Width = 518
+  object IBT_LCDPR: TIBTransaction
+    DefaultDatabase = IBD_LCDPR
+    Params.Strings = (
+      'read_committed'
+      'rec_version'
+      'nowait')
+    Left = 112
+    Top = 8
+  end
+  object IBD_LCDPR: TIBDatabase
+    Params.Strings = (
+      'user_name=SYSDBA'
+      'password=masterkey')
+    LoginPrompt = False
+    ServerType = 'IBServer'
+    Left = 48
+    Top = 8
+  end
+  object IBDS_Cidades: TIBDataSet
+    Database = IBD_LCDPR
+    Transaction = IBT_LCDPR
+    BufferChunks = 1000
+    CachedUpdates = False
+    DeleteSQL.Strings = (
+      
+        'EXECUTE PROCEDURE SP_CIDADE ('#39'3'#39', :CODIGO, :NOME, :CODESTADO, :I' +
+        'D_IBGE)')
+    InsertSQL.Strings = (
+      
+        'EXECUTE PROCEDURE SP_CIDADE ('#39'1'#39', :CODIGO, :NOME, :CODESTADO, :I' +
+        'D_IBGE)')
+    RefreshSQL.Strings = (
+      'select * from cidade')
+    SelectSQL.Strings = (
+      'select * from cidade')
+    ModifySQL.Strings = (
+      
+        'EXECUTE PROCEDURE SP_CIDADE ('#39'2'#39', :CODIGO, :NOME, :CODESTADO, :I' +
+        'D_IBGE)')
+    ParamCheck = True
+    UniDirectional = False
+    Left = 49
+    Top = 198
+  end
+  object DS_Cidade: TDataSource
+    DataSet = IBDS_Cidades
+    Left = 49
+    Top = 246
+  end
+  object IBDS_Imoveis: TIBDataSet
+    Database = IBD_LCDPR
+    Transaction = IBT_LCDPR
+    AfterDelete = IBDS_ImoveisAfterDelete
+    AfterPost = IBDS_ImoveisAfterDelete
+    BeforeInsert = IBDS_ImoveisAfterDelete
+    BeforePost = IBDS_ImoveisAfterDelete
+    BufferChunks = 1000
+    CachedUpdates = False
+    DeleteSQL.Strings = (
+      
+        'EXECUTE PROCEDURE SP_IMOVEIS('#39'3'#39', :CODIGO, :NOME, :CAD_ITR, :CAE' +
+        'PF, :INSC_EST, :ENDERECO, :NUM_END, :COMPLEMENTO, :BAIRRO, :CODC' +
+        'ID, :CEP, :COD_TPEXP, :PORC_PART, :FLG_SITUACAO, :CODFAZ_SISFAZ,' +
+        ' :NOME_FAZ, :CODCONTRIB)')
+    InsertSQL.Strings = (
+      
+        'EXECUTE PROCEDURE SP_IMOVEIS('#39'1'#39', :CODIGO, :NOME, :CAD_ITR, :CAE' +
+        'PF, :INSC_EST, :ENDERECO, :NUM_END, :COMPLEMENTO, :BAIRRO, :CODC' +
+        'ID, :CEP, :COD_TPEXP, :PORC_PART, :FLG_SITUACAO, :CODFAZ_SISFAZ,' +
+        ' :NOME_FAZ, :CODCONTRIB)')
+    ModifySQL.Strings = (
+      
+        'EXECUTE PROCEDURE SP_IMOVEIS('#39'2'#39', :CODIGO, :NOME, :CAD_ITR, :CAE' +
+        'PF, :INSC_EST, :ENDERECO, :NUM_END, :COMPLEMENTO, :BAIRRO, :CODC' +
+        'ID, :CEP, :COD_TPEXP, :PORC_PART, :FLG_SITUACAO, :CODFAZ_SISFAZ,' +
+        ' :NOME_FAZ, :CODCONTRIB)')
+    ParamCheck = True
+    UniDirectional = False
+    Left = 121
+    Top = 198
+  end
+  object DS_Imoveis: TDataSource
+    DataSet = qry_imoveis
+    Left = 321
+    Top = 102
+  end
+  object IBQ_pesquisa: TIBQuery
+    Database = IBD_LCDPR
+    Transaction = IBT_LCDPR
+    BufferChunks = 1000
+    CachedUpdates = False
+    ParamCheck = True
+    Left = 46
+    Top = 80
+  end
+  object IBD_SISFAZ: TIBDatabase
+    Params.Strings = (
+      'user_name=SYSDBA'
+      'password=masterkey')
+    LoginPrompt = False
+    ServerType = 'IBServer'
+    Left = 264
+    Top = 8
+  end
+  object IBT_SISFAZ: TIBTransaction
+    DefaultDatabase = IBD_SISFAZ
+    Params.Strings = (
+      'read_committed'
+      'rec_version'
+      'nowait')
+    Left = 328
+    Top = 8
+  end
+  object IBQ_PesqSisfaz: TIBQuery
+    Database = IBD_SISFAZ
+    Transaction = IBT_SISFAZ
+    BufferChunks = 1000
+    CachedUpdates = False
+    ParamCheck = True
+    Left = 430
+    Top = 8
+  end
+  object IBDS_Contribuiente: TIBDataSet
+    Database = IBD_LCDPR
+    Transaction = IBT_LCDPR
+    AfterDelete = IBDS_ImoveisAfterDelete
+    AfterPost = IBDS_ImoveisAfterDelete
+    BeforeInsert = IBDS_ImoveisAfterDelete
+    BeforePost = IBDS_ImoveisAfterDelete
+    BufferChunks = 1000
+    CachedUpdates = False
+    DeleteSQL.Strings = (
+      
+        'EXECUTE PROCEDURE SP_CONTRIBUINTE('#39'3'#39', :CODIGO, :NOME, :CPF, :EN' +
+        'DERECO, :NUMERO, :COMPLEMENTO, :BAIRRO, :CODCID, :CEP, :TELEFONE' +
+        ', :EMAIL, :FLG_SITUACAO)')
+    InsertSQL.Strings = (
+      
+        'EXECUTE PROCEDURE SP_CONTRIBUINTE('#39'1'#39', :CODIGO, :NOME, :CPF, :EN' +
+        'DERECO, :NUMERO, :COMPLEMENTO, :BAIRRO, :CODCID, :CEP, :TELEFONE' +
+        ', :EMAIL, :FLG_SITUACAO)')
+    ModifySQL.Strings = (
+      
+        'EXECUTE PROCEDURE SP_CONTRIBUINTE('#39'2'#39', :CODIGO, :NOME, :CPF, :EN' +
+        'DERECO, :NUMERO, :COMPLEMENTO, :BAIRRO, :CODCID, :CEP, :TELEFONE' +
+        ', :EMAIL, :FLG_SITUACAO)')
+    ParamCheck = True
+    UniDirectional = False
+    Left = 201
+    Top = 198
+  end
+  object DS_Contribuiente: TDataSource
+    DataSet = IBDS_Contribuiente
+    Left = 201
+    Top = 246
+  end
+  object IBDS_MovtoDupl: TIBDataSet
+    Database = IBD_LCDPR
+    Transaction = IBT_LCDPR
+    AfterDelete = IBDS_ImoveisAfterDelete
+    AfterPost = IBDS_ImoveisAfterDelete
+    BeforeInsert = IBDS_ImoveisAfterDelete
+    BeforePost = IBDS_ImoveisAfterDelete
+    BufferChunks = 1000
+    CachedUpdates = False
+    DeleteSQL.Strings = (
+      
+        'EXECUTE PROCEDURE SP_MOVTO_LIVRO('#39'3'#39', :CONTROLE, :DATA, :COD_IMO' +
+        'VEL, :COD_CONTA, :NUM_DOC, :TIPO_DOC, :HISTORICO, :CODCONTRIB, :' +
+        'TIPO_LANCTO, :VLR_ENTRADA, :VLR_SAIDA, :SALDO_FINAL, :NAT_SLD_FI' +
+        'NAL)')
+    InsertSQL.Strings = (
+      
+        'EXECUTE PROCEDURE SP_MOVTO_LIVRO('#39'1'#39', :CONTROLE, :DATA, :COD_IMO' +
+        'VEL, :COD_CONTA, :NUM_DOC, :TIPO_DOC, :HISTORICO, :CODCONTRIB, :' +
+        'TIPO_LANCTO, :VLR_ENTRADA, :VLR_SAIDA, :SALDO_FINAL, :NAT_SLD_FI' +
+        'NAL)')
+    ModifySQL.Strings = (
+      
+        'EXECUTE PROCEDURE SP_MOVTO_LIVRO('#39'2'#39', :CONTROLE, :DATA, :COD_IMO' +
+        'VEL, :COD_CONTA, :NUM_DOC, :TIPO_DOC, :HISTORICO, :CODCONTRIB, :' +
+        'TIPO_LANCTO, :VLR_ENTRADA, :VLR_SAIDA, :SALDO_FINAL, :NAT_SLD_FI' +
+        'NAL)')
+    ParamCheck = True
+    UniDirectional = False
+    Left = 281
+    Top = 198
+  end
+  object DS_MovtoDupl: TDataSource
+    DataSet = IBDS_MovtoDupl
+    Left = 281
+    Top = 246
+  end
+  object IBDS_Parceiros: TIBDataSet
+    Database = IBD_LCDPR
+    Transaction = IBT_LCDPR
+    AfterDelete = IBDS_ImoveisAfterDelete
+    AfterPost = IBDS_ImoveisAfterDelete
+    BeforeInsert = IBDS_ImoveisAfterDelete
+    BeforePost = IBDS_ImoveisAfterDelete
+    BufferChunks = 1000
+    CachedUpdates = False
+    DeleteSQL.Strings = (
+      
+        'EXECUTE PROCEDURE SP_PARCEIROS('#39'3'#39', :CODIGO, :NOME, :CPF, :FLG_S' +
+        'ITUACAO)')
+    InsertSQL.Strings = (
+      
+        'EXECUTE PROCEDURE SP_PARCEIROS('#39'1'#39', :CODIGO, :NOME, :CPF, :FLG_S' +
+        'ITUACAO)')
+    ModifySQL.Strings = (
+      
+        'EXECUTE PROCEDURE SP_PARCEIROS('#39'2'#39', :CODIGO, :NOME, :CPF, :FLG_S' +
+        'ITUACAO)')
+    ParamCheck = True
+    UniDirectional = False
+    Left = 361
+    Top = 198
+  end
+  object DS_Parceiros: TDataSource
+    DataSet = IBDS_Parceiros
+    Left = 361
+    Top = 246
+  end
+  object IBDS_ImoveisParc: TIBDataSet
+    Database = IBD_LCDPR
+    Transaction = IBT_LCDPR
+    AfterDelete = IBDS_ImoveisAfterDelete
+    AfterPost = IBDS_ImoveisAfterDelete
+    BeforeInsert = IBDS_ImoveisAfterDelete
+    BeforePost = IBDS_ImoveisAfterDelete
+    BufferChunks = 1000
+    CachedUpdates = False
+    DeleteSQL.Strings = (
+      
+        'EXECUTE PROCEDURE SP_IMOVEIS_PARCERIA('#39'3'#39', :COD_IMOVEL, :ORDEM, ' +
+        ':CODPARCEIRO, :PORC_PART)')
+    InsertSQL.Strings = (
+      
+        'EXECUTE PROCEDURE SP_IMOVEIS_PARCERIA('#39'1'#39', :COD_IMOVEL, :ORDEM, ' +
+        ':CODPARCEIRO, :PORC_PART)')
+    ModifySQL.Strings = (
+      
+        'EXECUTE PROCEDURE SP_IMOVEIS_PARCERIA('#39'2'#39', :COD_IMOVEL, :ORDEM, ' +
+        ':CODPARCEIRO, :PORC_PART)')
+    ParamCheck = True
+    UniDirectional = False
+    DataSource = DS_Imoveis
+    Left = 121
+    Top = 118
+  end
+  object DS_ImoveisParc: TDataSource
+    DataSet = IBDS_ImoveisParc
+    Left = 121
+    Top = 158
+  end
+  object DS_IBQ_PesqSisfaz: TDataSource
+    DataSet = IBQ_PesqSisfaz
+    Left = 433
+    Top = 54
+  end
+  object IBQ_pesquisa1: TIBQuery
+    Database = IBD_LCDPR
+    Transaction = IBT_LCDPR
+    BufferChunks = 1000
+    CachedUpdates = False
+    ParamCheck = True
+    Left = 46
+    Top = 144
+  end
+  object bd_lcdpr: TFDConnection
+    Params.Strings = (
+      
+        'Database=C:\Users\josiane\Documents\SISTEMAS\BANCO DE DADOS\SISF' +
+        'AZ\FARTURA\LCDPR.FDB'
+      'Password=masterkey'
+      'User_Name=sysdba'
+      'DriverID=FB')
+    LoginPrompt = False
+    Left = 176
+    Top = 56
+  end
+  object qry_imoveis: TFDQuery
+    Connection = bd_lcdpr
+    SQL.Strings = (
+      'SELECT A.*, B.NOME NOME_CID, C.SIGLA ESTADO,'
+      '       D.NOME TIPO_EXP, E.NOME N_CONTRIBUINTE'
+      'FROM IMOVEIS A'
+      'join CIDADE B on (A.CODCID = B.CODIGO)'
+      'join ESTADO C on (B.CODESTADO = C.CODIGO)'
+      'join TIPO_EXPLORACAO D on (A.COD_TPEXP = D.CODIGO)'
+      'join CONTRIBUINTE E on (A.CODCONTRIB = E.CODIGO)'
+      'order by a.nome, a.codigo')
+    Left = 272
+    Top = 104
+    object qry_imoveisCODIGO: TIntegerField
+      FieldName = 'CODIGO'
+      Origin = 'CODIGO'
+      ProviderFlags = [pfInUpdate, pfInWhere, pfInKey]
+      Required = True
+    end
+    object qry_imoveisNOME: TStringField
+      FieldName = 'NOME'
+      Origin = 'NOME'
+      Size = 100
+    end
+    object qry_imoveisCAD_ITR: TStringField
+      FieldName = 'CAD_ITR'
+      Origin = 'CAD_ITR'
+    end
+    object qry_imoveisCAEPF: TStringField
+      FieldName = 'CAEPF'
+      Origin = 'CAEPF'
+    end
+    object qry_imoveisINSC_EST: TStringField
+      FieldName = 'INSC_EST'
+      Origin = 'INSC_EST'
+    end
+    object qry_imoveisENDERECO: TStringField
+      FieldName = 'ENDERECO'
+      Origin = 'ENDERECO'
+      Size = 100
+    end
+    object qry_imoveisNUM_END: TStringField
+      FieldName = 'NUM_END'
+      Origin = 'NUM_END'
+      Size = 10
+    end
+    object qry_imoveisCOMPLEMENTO: TStringField
+      FieldName = 'COMPLEMENTO'
+      Origin = 'COMPLEMENTO'
+      Size = 50
+    end
+    object qry_imoveisBAIRRO: TStringField
+      FieldName = 'BAIRRO'
+      Origin = 'BAIRRO'
+      Size = 50
+    end
+    object qry_imoveisCODCID: TIntegerField
+      FieldName = 'CODCID'
+      Origin = 'CODCID'
+    end
+    object qry_imoveisCEP: TStringField
+      FieldName = 'CEP'
+      Origin = 'CEP'
+      Size = 10
+    end
+    object qry_imoveisCOD_TPEXP: TIntegerField
+      FieldName = 'COD_TPEXP'
+      Origin = 'COD_TPEXP'
+    end
+    object qry_imoveisPORC_PART: TCurrencyField
+      FieldName = 'PORC_PART'
+      Origin = 'PORC_PART'
+    end
+    object qry_imoveisFLG_SITUACAO: TStringField
+      FieldName = 'FLG_SITUACAO'
+      Origin = 'FLG_SITUACAO'
+      Size = 1
+    end
+    object qry_imoveisCODFAZ_SISFAZ: TIntegerField
+      FieldName = 'CODFAZ_SISFAZ'
+      Origin = 'CODFAZ_SISFAZ'
+    end
+    object qry_imoveisNOME_FAZ: TStringField
+      FieldName = 'NOME_FAZ'
+      Origin = 'NOME_FAZ'
+      ProviderFlags = []
+      Size = 50
+    end
+    object qry_imoveisCODCONTRIB: TIntegerField
+      FieldName = 'CODCONTRIB'
+      Origin = 'CODCONTRIB'
+      ProviderFlags = []
+    end
+    object qry_imoveisNOME_CID: TStringField
+      AutoGenerateValue = arDefault
+      FieldName = 'NOME_CID'
+      Origin = 'NOME'
+      ProviderFlags = []
+      ReadOnly = True
+      Size = 50
+    end
+    object qry_imoveisESTADO: TStringField
+      AutoGenerateValue = arDefault
+      FieldName = 'ESTADO'
+      Origin = 'SIGLA'
+      ProviderFlags = []
+      ReadOnly = True
+      FixedChar = True
+      Size = 2
+    end
+    object qry_imoveisTIPO_EXP: TStringField
+      AutoGenerateValue = arDefault
+      FieldName = 'TIPO_EXP'
+      Origin = 'NOME'
+      ProviderFlags = []
+      ReadOnly = True
+      Size = 30
+    end
+    object qry_imoveisN_CONTRIBUINTE: TStringField
+      AutoGenerateValue = arDefault
+      FieldName = 'N_CONTRIBUINTE'
+      Origin = 'NOME'
+      ProviderFlags = []
+      ReadOnly = True
+      Size = 100
+    end
+  end
+end

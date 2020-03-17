@@ -1,0 +1,62 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<BorlandProject>
+	<Transactions>
+    <Transaction>2019/12/04 15:08:58.000.400,=C:\Users\JOSIANE\OneDrive\Documentos\Embarcadero\Studio\Projects\Unit1.pas</Transaction>
+    <Transaction>2019/12/04 15:23:41.000.355,F:\SISTEMAS\LCDPR\LCD0101.pas=C:\Users\JOSIANE\OneDrive\Documentos\Embarcadero\Studio\Projects\Unit1.pas</Transaction>
+    <Transaction>2019/12/04 15:23:41.000.355,F:\SISTEMAS\LCDPR\LCD0101.dfm=C:\Users\JOSIANE\OneDrive\Documentos\Embarcadero\Studio\Projects\Unit1.dfm</Transaction>
+    <Transaction>2019/12/04 15:24:00.000.713,F:\SISTEMAS\LCDPR\LCDPR.dproj=C:\Users\JOSIANE\OneDrive\Documentos\Embarcadero\Studio\Projects\Project1.dproj</Transaction>
+    <Transaction>2019/12/04 15:25:04.000.185,=F:\SISTEMAS\Fonte_Lanchonete\SIA0000.pas</Transaction>
+    <Transaction>2019/12/04 15:25:43.000.751,F:\SISTEMAS\LCDPR\LCD0000.dfm=F:\SISTEMAS\Fonte_Lanchonete\SIA0000.dfm</Transaction>
+    <Transaction>2019/12/04 15:25:43.000.751,F:\SISTEMAS\LCDPR\LCD0000.pas=F:\SISTEMAS\Fonte_Lanchonete\SIA0000.pas</Transaction>
+    <Transaction>2019/12/04 17:48:36.000.800,F:\SISTEMAS\LCDPR\LCD0000.pas=</Transaction>
+    <Transaction>2019/12/04 17:57:47.000.623,=F:\SISTEMAS\LCDPR\Unit2.pas</Transaction>
+    <Transaction>2019/12/04 17:58:06.000.274,F:\SISTEMAS\LCDPR\LCD0000.dfm=F:\SISTEMAS\LCDPR\Unit2.dfm</Transaction>
+    <Transaction>2019/12/04 17:58:06.000.274,F:\SISTEMAS\LCDPR\LCD0000.pas=F:\SISTEMAS\LCDPR\Unit2.pas</Transaction>
+    <Transaction>2019/12/16 07:17:14.000.976,F:\SISTEMAS\LCDPR\LCD0101.pas=F:\SISTEMAS\LCDPR\LCD0102.pas</Transaction>
+    <Transaction>2019/12/16 07:17:14.000.976,F:\SISTEMAS\LCDPR\LCD0101.dfm=F:\SISTEMAS\LCDPR\LCD0102.dfm</Transaction>
+    <Transaction>2019/12/16 07:17:56.000.209,=F:\SISTEMAS\LCDPR\LCD0101.pas</Transaction>
+    <Transaction>2019/12/16 07:24:29.000.426,F:\SISTEMAS\LCDPR\LCD0101.dfm=F:\SISTEMAS\LCDPR\LCD0103.dfm</Transaction>
+    <Transaction>2019/12/16 07:24:29.000.426,F:\SISTEMAS\LCDPR\LCD0101.pas=F:\SISTEMAS\LCDPR\LCD0103.pas</Transaction>
+    <Transaction>2019/12/16 07:24:54.000.611,=F:\SISTEMAS\LCDPR\LCD0101.pas</Transaction>
+    <Transaction>2019/12/16 07:41:25.000.310,F:\SISTEMAS\LCDPR\LCD0103.pas=F:\SISTEMAS\LCDPR\LCD0203.pas</Transaction>
+    <Transaction>2019/12/16 07:41:25.000.310,F:\SISTEMAS\LCDPR\LCD0103.dfm=F:\SISTEMAS\LCDPR\LCD0203.dfm</Transaction>
+    <Transaction>2019/12/16 07:42:15.000.173,=F:\SISTEMAS\LCDPR\LCD0103.pas</Transaction>
+    <Transaction>2019/12/16 10:44:48.000.756,=F:\SISTEMAS\SISFAZ FARTURA\FAZ0135.pas</Transaction>
+    <Transaction>2019/12/16 10:45:05.000.351,F:\SISTEMAS\SISFAZ FARTURA\FAZ0135.pas=F:\SISTEMAS\LCDPR\LCD0104.pas</Transaction>
+    <Transaction>2019/12/16 10:45:05.000.351,F:\SISTEMAS\SISFAZ FARTURA\FAZ0135.dfm=F:\SISTEMAS\LCDPR\LCD0104.dfm</Transaction>
+    <Transaction>2019/12/16 10:46:33.000.381,=F:\SISTEMAS\SISFAZ FARTURA\DlgCidades.pas</Transaction>
+    <Transaction>2019/12/16 10:46:45.000.979,F:\SISTEMAS\SISFAZ FARTURA\DlgCidades.pas=F:\SISTEMAS\LCDPR\DlgCidades.pas</Transaction>
+    <Transaction>2019/12/16 10:46:45.000.979,F:\SISTEMAS\SISFAZ FARTURA\DlgCidades.dfm=F:\SISTEMAS\LCDPR\DlgCidades.dfm</Transaction>
+    <Transaction>2019/12/16 10:49:56.000.043,=F:\SISTEMAS\LCDPR\Unit1.pas</Transaction>
+    <Transaction>2019/12/16 10:58:00.000.054,F:\SISTEMAS\LCDPR\Unit1.pas=F:\SISTEMAS\LCDPR\Arquivos.pas</Transaction>
+    <Transaction>2019/12/16 10:58:00.000.054,F:\SISTEMAS\LCDPR\Unit1.dfm=F:\SISTEMAS\LCDPR\Arquivos.dfm</Transaction>
+    <Transaction>2019/12/27 16:15:45.000.678,=C:\Users\JOSIANE\Downloads\UACBrLCDPR.pas</Transaction>
+    <Transaction>2020/01/13 16:17:04.000.146,F:\SISTEMAS\LCDPR\LCD0203.pas=</Transaction>
+    <Transaction>2020/01/13 16:17:09.000.373,C:\Users\JOSIANE\Downloads\UACBrLCDPR.pas=</Transaction>
+    <Transaction>2020/01/22 17:26:44.000.571,F:\SISTEMAS\LCDPR\DlgTipoExportacao.dfm=F:\SISTEMAS\LCDPR\DlgCidades.dfm</Transaction>
+    <Transaction>2020/01/22 17:26:44.000.571,F:\SISTEMAS\LCDPR\DlgTipoExportacao.pas=F:\SISTEMAS\LCDPR\DlgCidades.pas</Transaction>
+    <Transaction>2020/01/22 17:27:28.000.799,=F:\SISTEMAS\LCDPR\DlgCidades.pas</Transaction>
+    <Transaction>2020/01/23 09:39:50.000.095,=F:\SISTEMAS\SISFAZ FARTURA\DlgFazendas.pas</Transaction>
+    <Transaction>2020/01/23 09:40:14.000.092,F:\SISTEMAS\LCDPR\DlgFazendas.dfm=F:\SISTEMAS\SISFAZ FARTURA\DlgFazendas.dfm</Transaction>
+    <Transaction>2020/01/23 09:40:14.000.092,F:\SISTEMAS\LCDPR\DlgFazendas.pas=F:\SISTEMAS\SISFAZ FARTURA\DlgFazendas.pas</Transaction>
+    <Transaction>2020/01/23 10:35:31.000.187,=F:\SISTEMAS\SISFAZ FARTURA\DlgBensPatrimoniais.pas</Transaction>
+    <Transaction>2020/01/23 10:35:48.000.794,F:\SISTEMAS\LCDPR\DlgImoveis.pas=F:\SISTEMAS\SISFAZ FARTURA\DlgBensPatrimoniais.pas</Transaction>
+    <Transaction>2020/01/23 10:35:48.000.794,F:\SISTEMAS\LCDPR\DlgImoveis.dfm=F:\SISTEMAS\SISFAZ FARTURA\DlgBensPatrimoniais.dfm</Transaction>
+    <Transaction>2020/01/27 09:40:01.000.414,F:\SISTEMAS\LCDPR\DlgImoveis.dfm=F:\SISTEMAS\LCDPR\DlgContribuiente.dfm</Transaction>
+    <Transaction>2020/01/27 09:40:01.000.414,F:\SISTEMAS\LCDPR\DlgImoveis.pas=F:\SISTEMAS\LCDPR\DlgContribuiente.pas</Transaction>
+    <Transaction>2020/01/27 09:40:36.000.670,=F:\SISTEMAS\LCDPR\DlgImoveis.pas</Transaction>
+    <Transaction>2020/01/27 09:42:45.000.219,=F:\SISTEMAS\LCDPR\LCD0203.pas</Transaction>
+    <Transaction>2020/02/11 13:50:04.000.724,F:\SISTEMAS\LCDPR\DlgImoveis.dfm=F:\SISTEMAS\LCDPR\DlgParceiros.dfm</Transaction>
+    <Transaction>2020/02/11 13:50:04.000.700,F:\SISTEMAS\LCDPR\DlgImoveis.pas=F:\SISTEMAS\LCDPR\DlgParceiros.pas</Transaction>
+    <Transaction>2020/02/11 13:50:34.000.226,=F:\SISTEMAS\LCDPR\DlgImoveis.pas</Transaction>
+    <Transaction>2020/03/16 13:44:02.000.730,C:\Users\josiane\Documents\SISTEMAS\LCDPR\LCD0104.pas=</Transaction>
+    <Transaction>2020/03/16 13:44:58.000.894,C:\Users\josiane\Documents\SISTEMAS\LCDPR\LCD0103.dfm=C:\Users\josiane\Documents\SISTEMAS\LCDPR\LCD0104.dfm</Transaction>
+    <Transaction>2020/03/16 13:44:58.000.894,C:\Users\josiane\Documents\SISTEMAS\LCDPR\LCD0103.pas=C:\Users\josiane\Documents\SISTEMAS\LCDPR\LCD0104.pas</Transaction>
+    <Transaction>2020/03/16 13:46:25.000.544,=C:\Users\josiane\Documents\SISTEMAS\LCDPR\LCD0103.pas</Transaction>
+    <Transaction>2020/03/16 21:48:17.000.463,C:\Users\josiane\Documents\SISTEMAS\LCDPR\DlgContribuiente.pas=C:\Users\josiane\Documents\SISTEMAS\LCDPR\DlgContaBancaria.pas</Transaction>
+    <Transaction>2020/03/16 21:48:17.000.463,C:\Users\josiane\Documents\SISTEMAS\LCDPR\DlgContribuiente.dfm=C:\Users\josiane\Documents\SISTEMAS\LCDPR\DlgContaBancaria.dfm</Transaction>
+    <Transaction>2020/03/17 11:03:57.952,C:\Users\josiane\Documents\SISTEMAS\LCDPR\LCD0201.dfm=C:\Users\josiane\Documents\SISTEMAS\LCDPR\LCD0203.dfm</Transaction>
+    <Transaction>2020/03/17 11:03:57.952,C:\Users\josiane\Documents\SISTEMAS\LCDPR\LCD0201.pas=C:\Users\josiane\Documents\SISTEMAS\LCDPR\LCD0203.pas</Transaction>
+    <Transaction>2020/03/17 11:05:01.169,=C:\Users\josiane\Documents\SISTEMAS\LCDPR\LCD0203.pas</Transaction>
+  </Transactions>
+</BorlandProject>

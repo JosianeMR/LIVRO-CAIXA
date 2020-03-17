@@ -1,0 +1,136 @@
+unit DlgTipoExportacao;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+  Grids, DBGrids, Db, ComCtrls, StdCtrls, ExtCtrls, Buttons,
+  IBX.IBCustomDataSet, IBX.IBQuery;
+
+type
+  TDlg_TipoExportacao = class(TForm)
+    ds_pesquisa: TDataSource;
+    DBGrid1: TDBGrid;
+    EdPesq: TEdit;
+    Bevel1: TBevel;
+    Label1: TLabel;
+    StatusBar1: TStatusBar;
+    IBQ_Pesquisa: TIBQuery;
+    RG_pesquisa: TRadioGroup;
+    RG_ordem: TRadioGroup;
+    procedure FormKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure FormShow(Sender: TObject);
+    procedure EdPesqChange(Sender: TObject);
+    procedure RG_ordemClick(Sender: TObject);
+    procedure RG_pesquisaClick(Sender: TObject);
+    procedure IBQ_PesquisaAfterOpen(DataSet: TDataSet);
+    procedure DBGrid1DblClick(Sender: TObject);
+    function RemoveAcento(Str: string): string;
+
+  private
+    { Private declarations }
+    itamanho : integer;
+  public
+    { Public declarations }
+  end;
+
+var
+  Dlg_TipoExportacao: TDlg_TipoExportacao;
+
+implementation
+
+uses Arquivos;
+
+{$R *.DFM}
+
+function TDlg_TipoExportacao.RemoveAcento(Str: string): string;
+const
+  ComAcento = '‡‚ÍÙ˚„ı·ÈÌÛ˙Á¸¿¬ ‘€√’¡…Õ”⁄«‹';
+  SemAcento = 'aaeouaoaeioucuAAEOUAOAEIOUCU';
+var
+   x: Integer;
+begin;
+  for x := 1 to Length(Str) do
+  if Pos(Str[x],ComAcento) <> 0 then
+    Str[x] := SemAcento[Pos(Str[x], ComAcento)];
+  Result := Str;
+end;
+
+procedure TDlg_TipoExportacao.FormKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if (Shift = [ssAlt]) and (Key = VK_F4) then Key := VK_Clear;
+  if (key = VK_Return) and
+     (IBQ_Pesquisa.Active) and
+     (IBQ_Pesquisa.recordcount <> 0)
+                     then ModalResult := mrOk;
+  if key = vk_up     then IBQ_Pesquisa.Prior;
+  if key = vk_down   then IBQ_Pesquisa.Next;
+  if key = VK_Escape then ModalResult := mrCancel;
+end;
+
+procedure TDlg_TipoExportacao.FormShow(Sender: TObject);
+begin
+//  Caption := caption + '          '+ DM.sempresa;
+  if RG_ordem.ItemIndex = 0 then itamanho := 1
+  else itamanho := 0;
+  EdPesq.Clear;
+  EdPesq.SetFocus;
+  IBQ_Pesquisa.Open;
+end;
+
+procedure TDlg_TipoExportacao.EdPesqChange(Sender: TObject);
+begin
+  if Length(EdPesq.Text) > itamanho then
+  begin
+    with IBQ_Pesquisa, SQL do
+    begin
+      Close;
+      Clear;
+      Add('SELECT A.CODIGO, A.NOME, B.SIGLA FROM CIDADE A, ESTADO B ');
+      Add('WHERE (A.CODESTADO = B.CODIGO) ');
+      if RG_ordem.ItemIndex = 0 then
+      begin
+        Add('AND (UPPER(A.NOME) LIKE :N) ORDER BY A.NOME');
+        if RG_pesquisa.ItemIndex = 0 then
+           ParamByName('N').AsString := AnsiUpperCase(EdPesq.Text)+'%'
+        else
+           ParamByName('N').AsString := '%'+AnsiUpperCase(EdPesq.Text)+'%';
+      end
+      else
+      begin
+        Add('AND (A.CODIGO = :N) ORDER BY A.CODIGO');
+        ParamByName('N').AsInteger := strtoint(EdPesq.Text);
+      end;
+      Open;
+    end;
+  end;
+end;
+
+procedure TDlg_TipoExportacao.RG_ordemClick(Sender: TObject);
+begin
+  if RG_ordem.ItemIndex = 0 then
+     itamanho := 1
+  else
+     itamanho := 0;
+  EdPesq.setfocus;
+end;
+
+procedure TDlg_TipoExportacao.RG_pesquisaClick(Sender: TObject);
+begin
+  EdPesq.setfocus;
+end;
+
+procedure TDlg_TipoExportacao.IBQ_PesquisaAfterOpen(DataSet: TDataSet);
+begin
+  (IBQ_Pesquisa.fieldbyname('CODIGO') As TIntegerfield).displayformat := '000000';
+end;
+
+procedure TDlg_TipoExportacao.DBGrid1DblClick(Sender: TObject);
+begin
+  ModalResult := Mrok;
+end;
+
+
+end.

@@ -1,0 +1,244 @@
+unit LCD0103;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, dxSkinsCore, dxSkinBlack, dxSkinBlue,
+  dxSkinBlueprint, dxSkinCaramel, dxSkinCoffee, dxSkinDarkRoom, dxSkinDarkSide,
+  dxSkinDevExpressDarkStyle, dxSkinDevExpressStyle, dxSkinFoggy,
+  dxSkinGlassOceans, dxSkinHighContrast, dxSkiniMaginary, dxSkinLilian,
+  dxSkinLiquidSky, dxSkinLondonLiquidSky, dxSkinMcSkin, dxSkinMetropolis,
+  dxSkinMetropolisDark, dxSkinMoneyTwins, dxSkinOffice2007Black,
+  dxSkinOffice2007Blue, dxSkinOffice2007Green, dxSkinOffice2007Pink,
+  dxSkinOffice2007Silver, dxSkinOffice2010Black, dxSkinOffice2010Blue,
+  dxSkinOffice2010Silver, dxSkinOffice2013DarkGray, dxSkinOffice2013LightGray,
+  dxSkinOffice2013White, dxSkinOffice2016Colorful, dxSkinOffice2016Dark,
+  dxSkinPumpkin, dxSkinSeven, dxSkinSevenClassic, dxSkinSharp, dxSkinSharpPlus,
+  dxSkinSilver, dxSkinSpringTime, dxSkinStardust, dxSkinSummer2008,
+  dxSkinTheAsphaltWorld, dxSkinTheBezier, dxSkinsDefaultPainters,
+  dxSkinValentine, dxSkinVisualStudio2013Blue, dxSkinVisualStudio2013Dark,
+  dxSkinVisualStudio2013Light, dxSkinVS2010, dxSkinWhiteprint,
+  dxSkinXmas2008Blue, dxBar, cxClasses, Vcl.ExtCtrls, cxGraphics,
+  cxLookAndFeels, cxLookAndFeelPainters, Vcl.Menus, Vcl.StdCtrls, cxButtons,
+  Vcl.DBCtrls, Vcl.Mask, Data.DB, Vcl.Grids, Vcl.DBGrids, FireDAC.Stan.Intf,
+  FireDAC.Stan.Option, FireDAC.Stan.Param, FireDAC.Stan.Error, FireDAC.DatS,
+  FireDAC.Phys.Intf, FireDAC.DApt.Intf, FireDAC.Stan.Async, FireDAC.DApt,
+  cxControls, cxContainer, cxEdit, cxGroupBox, cxRadioGroup, cxDBEdit,
+  cxTextEdit, FireDAC.Comp.DataSet, FireDAC.Comp.Client;
+
+type
+  TLCD_0103 = class(TForm)
+    Panel1: TPanel;
+    Pn_Botoes: TPanel;
+    bbtn_incluir: TcxButton;
+    bbtn_excluir: TcxButton;
+    bbtn_alterar: TcxButton;
+    bbtn_cancelar: TcxButton;
+    bbtn_sair: TcxButton;
+    bbtn_gravar: TcxButton;
+    bbtn_pesquisar: TcxButton;
+    Pn_Dados: TPanel;
+    Label5: TLabel;
+    Label3: TLabel;
+    Label1: TLabel;
+    DBGrid1: TDBGrid;
+    qry_Parceiros: TFDQuery;
+    Ds_Parceiros: TDataSource;
+    FDQuery_Pesquisa: TFDQuery;
+    cxDBText_Nome: TcxDBTextEdit;
+    cxDBTextEdit2: TcxDBTextEdit;
+    cxDBText_PorcPart: TcxDBTextEdit;
+    cxDBRG_Situacao: TcxDBRadioGroup;
+    qry_ParceirosCODIGO: TIntegerField;
+    qry_ParceirosNOME: TStringField;
+    qry_ParceirosCPF_CNPJ: TStringField;
+    qry_ParceirosFLG_SITUACAO: TStringField;
+    procedure montar_select(wparametro, wcodigo : integer);
+    procedure bbtn_sairClick(Sender: TObject);
+    procedure Botoes;
+    procedure bbtn_incluirClick(Sender: TObject);
+    procedure bbtn_excluirClick(Sender: TObject);
+    procedure bbtn_alterarClick(Sender: TObject);
+    procedure bbtn_gravarClick(Sender: TObject);
+    procedure bbtn_cancelarClick(Sender: TObject);
+    procedure bbtn_pesquisarClick(Sender: TObject);
+    procedure FormShow(Sender: TObject);
+    procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+  private
+    wcodigo : Integer;
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  LCD_0103: TLCD_0103;
+
+implementation
+
+{$R *.dfm}
+
+uses Arquivos, DlgParceiros;
+
+procedure TLCD_0103.montar_select(wparametro, wcodigo : integer);
+begin
+  dm.IBDS_Parceiros.Close;
+  dm.IBDS_Parceiros.SelectSQL.Clear;
+  dm.IBDS_Parceiros.SelectSQL.Add('SELECT * FROM PARCEIROS ');
+  if wparametro = 1 then
+  begin
+    dm.IBDS_Parceiros.SelectSQL.Add('WHERE (CODIGO = :CODIGO)');
+    dm.IBDS_Parceiros.ParamByName('CODIGO').AsInteger := wcodigo;
+  end;
+  dm.IBDS_Parceiros.open;
+end;
+
+procedure TLCD_0103.Botoes;
+begin
+ //tabela em edição
+ if dm.IBDS_Parceiros.State in [dsEdit,dsInsert] then
+   begin
+      bbtn_incluir.Enabled  := False;
+      bbtn_Excluir.Enabled  := False;
+      bbtn_alterar.enabled  := false;
+      bbtn_Cancelar.Enabled := True;
+      bbtn_gravar.Enabled   := True;
+      bbtn_pesquisar.Enabled   := False;
+      bbtn_sair.Enabled   := False;
+   end;
+ if dm.IBDS_Parceiros.State in [dsBrowse] then
+   begin
+      bbtn_incluir.Enabled  := True;
+      bbtn_Excluir.Enabled  := True;
+      bbtn_alterar.enabled  := True;
+      bbtn_Cancelar.Enabled := False;
+      bbtn_gravar.Enabled   := False;
+      bbtn_pesquisar.Enabled   := true;
+      bbtn_sair.Enabled   := True;
+   end;
+ if dm.IBDS_Parceiros.State in [dsInactive] then
+   begin
+      bbtn_incluir.Enabled  := True;
+      bbtn_Excluir.Enabled  := True;
+      bbtn_alterar.enabled  := True;
+      bbtn_Cancelar.Enabled := False;
+      bbtn_gravar.Enabled   := False;
+      bbtn_pesquisar.Enabled   := true;
+      bbtn_sair.Enabled   := True;
+   end;
+end;
+
+procedure TLCD_0103.FormKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if key = Vk_Return then Perform(WM_NEXTDLGCTL,0,0);
+  if key = Vk_Escape then Perform(WM_NEXTDLGCTL,1,0);
+end;
+
+procedure TLCD_0103.FormShow(Sender: TObject);
+begin
+  Montar_Select(0, 0);
+end;
+
+procedure TLCD_0103.bbtn_alterarClick(Sender: TObject);
+begin
+  Pn_Dados.Enabled := True;
+  dm.IBDS_Parceiros.Edit;
+  wcodigo := dm.IBDS_Parceiros.FieldByName('CODIGO').AsInteger;
+  botoes;
+  DBEdit_Nome.SetFocus;
+end;
+
+procedure TLCD_0103.bbtn_cancelarClick(Sender: TObject);
+begin
+  Pn_Dados.Enabled := False;
+  qry_Parceiros.Cancel;
+  botoes;
+  bbtn_Incluir.SetFocus;
+end;
+
+procedure TLCD_0103.bbtn_excluirClick(Sender: TObject);
+var
+  i, result : Integer;
+begin
+   // Abaixo a pergunta que coloca primeiro o NÃO e depois o SIM
+   with CreateMessageDialog('Tem certeza que deseja excluir esse registro ???', mtConfirmation,[mbYes,mbNo]) do
+     try
+       for i := 0 to ComponentCount - 1 do
+         if Components[i] is TButton then
+           with TButton(Components[i]) do
+             case ModalResult of
+               mrYes : Caption := 'Não'; {6}
+               mrNo  : Caption := 'Sim'; {7} {2 é o click no botão X da janela}
+             end;
+        Result := ShowModal;
+     finally
+       Free;
+   end;
+
+   // Testa o resultado
+   if result = 7 then
+   begin
+      // colocar filtro pra não deixar excluir se tiver lançamento
+     qry_Parceiros.Delete;
+     qry_Parceiros.Close;
+     qry_Parceiros.Open;
+   end;
+end;
+
+procedure TLCD_0103.bbtn_gravarClick(Sender: TObject);
+begin
+  Pn_Dados.Enabled := False;
+  qry_Parceiros.Post;
+  if qry_Parceiros.FieldByName('CODIGO').AsInteger = 0 then
+  begin
+//    dm.IBDS_Imoveis.Close;
+    FDQuery_Pesquisa.Close;
+    FDQuery_Pesquisa.SQL.Clear;
+    FDQuery_Pesquisa.SQL.Add('SELECT MAX(CODIGO) CODIGO FROM PARCEIROS ');
+    FDQuery_Pesquisa.Open;
+    wcodigo := FDQuery_Pesquisa.FieldByName('CODIGO').AsInteger;
+    qry_Parceiros.Close;
+    qry_Parceiros.ParamByName('CODIGO').AsInteger := wcodigo;
+    qry_Parceiros.Open;
+  end
+  else
+  begin
+    qry_Parceiros.Close;
+    qry_Parceiros.ParamByName('CODIGO').AsInteger := wcodigo;
+    qry_Parceiros.Open;
+  end;
+  botoes;
+  bbtn_Incluir.SetFocus;
+end;
+
+procedure TLCD_0103.bbtn_incluirClick(Sender: TObject);
+begin
+  Pn_Dados.Enabled := True;
+  qry_Parceiros.Append;
+  qry_Parceiros.FieldByName('CODIGO').AsInteger := 0;
+  qry_Parceiros.FieldByName('FLG_SITUACAO').AsString := 'A';
+  botoes;
+  cxDBText_Nome.SetFocus;
+end;
+
+procedure TLCD_0103.bbtn_pesquisarClick(Sender: TObject);
+begin
+  Dlg_Parceiros := TDlg_Parceiros.Create(Self);
+  if Dlg_Parceiros.ShowModal = MrOk  then
+  begin
+    qry_Parceiros.Close;
+    qry_Parceiros.ParamByName('CODIGO').AsInteger := Dlg_Parceiros.FDQuery_Pesquisa.FieldByName('CODIGO').AsInteger;
+    qry_Parceiros.Open;
+    botoes;
+  end;
+  Dlg_Parceiros.Free;
+end;
+
+procedure TLCD_0103.bbtn_sairClick(Sender: TObject);
+begin
+  Close;
+end;
+
+end.

@@ -1,0 +1,59 @@
+object LCD_0000: TLCD_0000
+  Left = 0
+  Top = 0
+  Caption = 'LCD_0000'
+  ClientHeight = 373
+  ClientWidth = 560
+  Color = clBtnFace
+  Font.Charset = DEFAULT_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -11
+  Font.Name = 'Tahoma'
+  Font.Style = []
+  Menu = MainMenu1
+  OldCreateOrder = False
+  Position = poScreenCenter
+  WindowState = wsMaximized
+  OnClose = FormClose
+  PixelsPerInch = 96
+  TextHeight = 13
+  object MainMenu1: TMainMenu
+    Left = 416
+    Top = 72
+    object Cadastros1: TMenuItem
+      Caption = 'Cadastros'
+      object Imveis1: TMenuItem
+        Caption = 'Im'#243'veis'
+        OnClick = Imveis1Click
+      end
+      object Declarante1: TMenuItem
+        Caption = 'Declarante'
+        OnClick = Declarante1Click
+      end
+      object Parceiros1: TMenuItem
+        Caption = 'Parceiros'
+        OnClick = Parceiros1Click
+      end
+    end
+    object ImportarArquivos1: TMenuItem
+      Caption = 'Importar Arquivos'
+      object ImportarSISFAZ1: TMenuItem
+        Caption = 'Importar SISFAZ'
+        OnClick = ImportarSISFAZ1Click
+      end
+      object ImportarSensata1: TMenuItem
+        Caption = 'Importar Sensata'
+      end
+      object Movimentao1: TMenuItem
+        Caption = 'Movimenta'#231#227'o'
+      end
+    end
+    object GerarLivro1: TMenuItem
+      Caption = 'Gerar Livro'
+    end
+    object Sair1: TMenuItem
+      Caption = 'Sair'
+      OnClick = Sair1Click
+    end
+  end
+end

@@ -1,0 +1,474 @@
+unit LCD0203;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, dxSkinsCore, dxSkinBlack, dxSkinBlue,
+  dxSkinBlueprint, dxSkinCaramel, dxSkinCoffee, dxSkinDarkRoom, dxSkinDarkSide,
+  dxSkinDevExpressDarkStyle, dxSkinDevExpressStyle, dxSkinFoggy,
+  dxSkinGlassOceans, dxSkinHighContrast, dxSkiniMaginary, dxSkinLilian,
+  dxSkinLiquidSky, dxSkinLondonLiquidSky, dxSkinMcSkin, dxSkinMetropolis,
+  dxSkinMetropolisDark, dxSkinMoneyTwins, dxSkinOffice2007Black,
+  dxSkinOffice2007Blue, dxSkinOffice2007Green, dxSkinOffice2007Pink,
+  dxSkinOffice2007Silver, dxSkinOffice2010Black, dxSkinOffice2010Blue,
+  dxSkinOffice2010Silver, dxSkinOffice2013DarkGray, dxSkinOffice2013LightGray,
+  dxSkinOffice2013White, dxSkinOffice2016Colorful, dxSkinOffice2016Dark,
+  dxSkinPumpkin, dxSkinSeven, dxSkinSevenClassic, dxSkinSharp, dxSkinSharpPlus,
+  dxSkinSilver, dxSkinSpringTime, dxSkinStardust, dxSkinSummer2008,
+  dxSkinTheAsphaltWorld, dxSkinTheBezier, dxSkinsDefaultPainters,
+  dxSkinValentine, dxSkinVisualStudio2013Blue, dxSkinVisualStudio2013Dark,
+  dxSkinVisualStudio2013Light, dxSkinVS2010, dxSkinWhiteprint,
+  dxSkinXmas2008Blue, dxBar, cxClasses, Vcl.ExtCtrls, cxGraphics,
+  cxLookAndFeels, cxLookAndFeelPainters, Vcl.Menus, Vcl.StdCtrls, cxButtons,
+  Vcl.DBCtrls, Vcl.Mask, Vcl.Buttons, Data.DB, Vcl.Grids, Vcl.DBGrids,
+  FireDAC.Stan.Intf, FireDAC.Stan.Option, FireDAC.Stan.Error, FireDAC.UI.Intf,
+  FireDAC.Phys.Intf, FireDAC.Stan.Def, FireDAC.Stan.Pool, FireDAC.Stan.Async,
+  FireDAC.Phys, FireDAC.Phys.FB, FireDAC.Phys.FBDef, FireDAC.VCLUI.Wait,
+  FireDAC.Comp.Client;
+
+type
+  TLCD_0203 = class(TForm)
+    Panel1: TPanel;
+    Pn_Saida: TPanel;
+    Label4: TLabel;
+    Label3: TLabel;
+    Label1: TLabel;
+    MEdit_DataI: TMaskEdit;
+    MEdit_DataF: TMaskEdit;
+    Edit_CodEmpresa: TEdit;
+    Edit_Contribuinte: TEdit;
+    Panel2: TPanel;
+    Bbtn_Gerar: TBitBtn;
+    bbtn_sair: TBitBtn;
+    Panel4: TPanel;
+    Image4: TImage;
+    Label28: TLabel;
+    Rg_Tipo: TRadioGroup;
+    bbtn_pesquisar: TcxButton;
+    DBGrid1: TDBGrid;
+    BD_SISFAZ: TFDConnection;
+    procedure bbtn_sairClick(Sender: TObject);
+    procedure MEdit_DataIKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure MEdit_DataFKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure Edit_CodEmpresaKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure Bbtn_GerarClick(Sender: TObject);
+    procedure bbtn_pesquisarClick(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
+  private
+    CPF_sem_mascara : String;
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  LCD_0203: TLCD_0203;
+
+implementation
+
+{$R *.dfm}
+
+uses DlgContribuiente, Arquivos;
+
+procedure TLCD_0203.Bbtn_GerarClick(Sender: TObject);
+Var icodfaz, icodcta, icodtp_dupl, icontagem : Integer;
+    scontagem : String;
+begin
+  if Rg_Tipo.ItemIndex = 0 then
+  begin
+    dm.IBQ_PesqSisfaz.Close;
+    dm.IBQ_PesqSisfaz.SQL.Clear;
+    dm.IBQ_PesqSisfaz.SQL.Add('select a.dt_lancto, a.cc_nro, a.cta_nro, a.faz_nro, ');
+    dm.IBQ_PesqSisfaz.SQL.Add('a.cul_nro, a.valor valor_baixa, A.CC_NRO, b.nome n_fazenda, ');
+    dm.IBQ_PesqSisfaz.SQL.Add('c.nome n_cultura, d.nro DUPL_NRO, d.flg_dc, d.nro_dupl NFISCAL, ');
+    dm.IBQ_PesqSisfaz.SQL.Add('D.NRO_EMPRESA, d.cod_tipo_dupl, e.cnpj, e.nome, ');
+    dm.IBQ_PesqSisfaz.SQL.Add('f.nome n_custo from movcta a, fazenda b, cultura c, ');
+    dm.IBQ_PesqSisfaz.SQL.Add('duplicata d, fornecedores e, subgrupo_custo f, ');
+    dm.IBQ_PesqSisfaz.SQL.Add('tipo_duplicata g where a.faz_nro = b.codigo and ');
+    dm.IBQ_PesqSisfaz.SQL.Add('a.cul_nro = c.codigo and a.dplb_dupl_flg_dc = d.flg_dc ');
+    dm.IBQ_PesqSisfaz.SQL.Add('and a.dplb_dupl_nro = d.nro and d.clifor = e.codigo and ');
+    dm.IBQ_PesqSisfaz.SQL.Add('a.cc_nro = f.codcusto and d.cod_tipo_dupl = g.codigo and ');
+    dm.IBQ_PesqSisfaz.SQL.Add('d.flg_dc = :flg_dc and g.flg_livro_cx = :livro_cx and ');
+    dm.IBQ_PesqSisfaz.SQL.Add('a.dt_lancto between :dtini and :dtfim ');
+    dm.IBQ_PesqSisfaz.SQL.Add('and d.nro_empresa = :empresa');
+    dm.IBQ_PesqSisfaz.ParamByName('DTINI').AsString := MEdit_DataI.Text;
+    dm.IBQ_PesqSisfaz.ParamByName('DTFIM').AsString := MEdit_DataF.Text;
+    dm.IBQ_PesqSisfaz.ParamByName('EMPRESA').AsString := Edit_CodEmpresa.Text;
+    dm.IBQ_PesqSisfaz.ParamByName('flg_dc').AsString := 'D';
+    dm.IBQ_PesqSisfaz.ParamByName('livro_cx').AsString := 'S';
+    dm.IBQ_PesqSisfaz.Open;
+    dm.IBQ_PesqSisfaz.RecordCount;
+//    icontagem :=     dm.IBQ_PesqSisfaz.RecordCount;
+//    scontagem := inttostr(icontagem);
+//    SHOWmessage(scontagem);
+
+    while not dm.IBQ_PesqSisfaz.Eof do
+    begin
+      icontagem :=     dm.IBQ_PesqSisfaz.RecordCount;
+      DM.IBQ_pesquisa.Close;
+      DM.IBQ_pesquisa.SQL.Clear;
+      DM.IBQ_pesquisa.SQL.Add('SELECT * FROM IMOVEIS WHERE CODFAZ = :CODFAZ');
+      DM.IBQ_pesquisa.ParamByName('CODFAZ').AsInteger := DM.IBQ_PesqSisfaz.FieldByName('faz_nro').AsInteger;
+      DM.IBQ_pesquisa.Open;
+      if dm.IBQ_pesquisa.RecordCount > 0 then
+        icodfaz := DM.IBQ_pesquisa.FieldByName('CODIGO').AsInteger
+      else
+        icodfaz := 1;
+
+      DM.IBQ_pesquisa.Close;
+      DM.IBQ_pesquisa.SQL.Clear;
+      DM.IBQ_pesquisa.SQL.Add('SELECT * FROM CONTA_BANCARIA WHERE NRO_CONTA = :CODCTA');
+      DM.IBQ_pesquisa.ParamByName('CODCTA').AsInteger := DM.IBQ_PesqSisfaz.FieldByName('CTA_NRO').AsInteger;
+      DM.IBQ_pesquisa.Open;
+      if dm.IBQ_pesquisa.RecordCount > 0 then
+        icodcta := DM.IBQ_pesquisa.FieldByName('CODIGO').AsInteger
+      else
+        icodcta := 999;
+
+      DM.IBQ_pesquisa.Close;
+      DM.IBQ_pesquisa.SQL.Clear;
+      DM.IBQ_pesquisa.SQL.Add('SELECT * FROM TIPO_DUPLICATA WHERE COD_SISFAZ = :SISFAZ');
+      DM.IBQ_pesquisa.ParamByName('SISFAZ').AsInteger := DM.IBQ_PesqSisfaz.FieldByName('COD_TIPO_DUPL').AsInteger;
+      DM.IBQ_pesquisa.Open;
+      if dm.IBQ_pesquisa.RecordCount > 0 then
+        icodtp_dupl := DM.IBQ_pesquisa.FieldByName('CODIGO').AsInteger
+      else
+        icodtp_dupl := 6;
+
+      dm.IBQ_pesquisa1.Close;
+      dm.IBQ_pesquisa1.SQL.Clear;
+      dm.IBQ_pesquisa1.SQL.Add('SELECT * FROM MOVTO_LIVRO WHERE DUPL_NRO = :DUPL_NRO AND ');
+      DM.IBQ_pesquisa1.SQL.Add('DUPL_FLG_DC = :DUPL_FLG_DC AND COD_IMOVEL = :IMOVEL AND ');
+      DM.IBQ_pesquisa1.SQL.Add('CC_CUSTO = :CC_CUSTO ');
+      dm.IBQ_pesquisa1.ParamByName('DUPL_NRO').AsInteger    := DM.IBQ_PesqSisfaz.FieldByName('DUPL_NRO').AsInteger;
+      dm.IBQ_pesquisa1.ParamByName('DUPL_FLG_DC').AsString  := DM.IBQ_PesqSisfaz.FieldByName('FLG_DC').AsString;
+      dm.IBQ_pesquisa1.ParamByName('IMOVEL').AsInteger      := icodfaz;
+      dm.IBQ_pesquisa1.ParamByName('CC_CUSTO').AsString     := DM.IBQ_PesqSisfaz.FieldByName('CC_NRO').AsString;
+      DM.IBQ_pesquisa1.Open;
+      if dm.IBQ_pesquisa1.RecordCount > 0 then
+      begin
+//        SHOWmessage('ACHOU DADO REPETIDO NA TABELA');
+        dm.IBQ_pesquisa.Close;
+        dm.IBQ_pesquisa.SQL.Clear;
+        dm.IBQ_pesquisa.SQL.Add('UPDATE MOVTO_LIVRO SET VLR_SAIDA = :VLR_SAIDA ');
+        dm.IBQ_pesquisa.SQL.Add('WHERE CONTROLE = :CONTROLE AND DUPL_NRO = :DUPL_NRO AND ');
+        DM.IBQ_pesquisa.SQL.Add('DUPL_FLG_DC = :DUPL_FLG_DC AND CC_CUSTO = :CC_CUSTO ');
+        dm.IBQ_pesquisa.ParamByName('CONTROLE').AsInteger    := DM.IBQ_pesquisa1.FieldByName('CONTROLE').AsInteger;
+        dm.IBQ_pesquisa.ParamByName('VLR_SAIDA').AsFloat     := DM.IBQ_pesquisa1.FieldByName('VLR_SAIDA').AsFloat +
+                                                                DM.IBQ_PesqSisfaz.FieldByName('valor_baixa').AsFloat;
+        dm.IBQ_pesquisa.ParamByName('DUPL_NRO').AsInteger    := DM.IBQ_pesquisa1.FieldByName('DUPL_NRO').AsInteger;
+        dm.IBQ_pesquisa.ParamByName('DUPL_FLG_DC').AsString  := DM.IBQ_pesquisa1.FieldByName('DUPL_FLG_DC').AsString;
+        dm.IBQ_pesquisa.ParamByName('CC_CUSTO').AsString     := DM.IBQ_pesquisa1.FieldByName('CC_CUSTO').AsString;
+        dm.IBQ_pesquisa.ExecSQL;
+        dm.IBT_LCDPR.CommitRetaining;
+//        SHOWmessage('UPDATE NA TABELA');
+        dm.IBQ_PesqSisfaz.Next;
+      end
+      else
+      begin
+        dm.IBQ_pesquisa.Close;
+        dm.IBQ_pesquisa.SQL.Clear;
+        dm.IBQ_pesquisa.SQL.Add('INSERT INTO MOVTO_LIVRO (CONTROLE, DATA, COD_IMOVEL, ');
+        dm.IBQ_pesquisa.SQL.Add('COD_CONTA, NUM_DOC, TIPO_DOC, HISTORICO, CODCONTRIB, ');
+        dm.IBQ_pesquisa.SQL.Add('TIPO_LANCTO, VLR_ENTRADA, VLR_SAIDA, SALDO_FINAL, ');
+        dm.IBQ_pesquisa.SQL.Add('NAT_SLD_FINAL, CNPJ_CLIFOR, DUPL_NRO, DUPL_FLG_DC, CC_CUSTO ) ');
+        dm.IBQ_pesquisa.SQL.Add('VALUES (:CONTROLE, :DATA, :COD_IMOVEL, :COD_CONTA,');
+        dm.IBQ_pesquisa.SQL.Add(':NUM_DOC, :TIPO_DOC, :HISTORICO, :CODCONTRIB, ');
+        dm.IBQ_pesquisa.SQL.Add(':TIPO_LANCTO, :VLR_ENTRADA, :VLR_SAIDA, :SALDO_FINAL, ');
+        dm.IBQ_pesquisa.SQL.Add(':NAT_SLD_FINAL, :CNPJ_CLIFOR, :DUPL_NRO, :DUPL_FLG_DC, :CC_CUSTO) ');
+        dm.IBQ_pesquisa.ParamByName('CONTROLE').AsInteger    := 0;
+        dm.IBQ_pesquisa.ParamByName('DATA').AsDateTime       := DM.IBQ_PesqSisfaz.FieldByName('dt_lancto').AsDateTime;
+        dm.IBQ_pesquisa.ParamByName('COD_IMOVEL').AsInteger  := icodfaz;
+        DM.IBQ_pesquisa.ParamByName('COD_CONTA').AsInteger   := icodcta;
+        dm.IBQ_pesquisa.ParamByName('NUM_DOC').AsString      := DM.IBQ_PesqSisfaz.FieldByName('NFISCAL').AsString;
+        dm.IBQ_pesquisa.ParamByName('TIPO_DOC').AsInteger    := icodtp_dupl;
+        dm.IBQ_pesquisa.ParamByName('HISTORICO').AsString    := DM.IBQ_PesqSisfaz.FieldByName('n_custo').AsString;
+        if dm.IBQ_PesqSisfaz.FieldByName('CNPJ').AsString <> '' then
+          dm.IBQ_pesquisa.ParamByName('CNPJ_CLIFOR').AsString  := DM.IBQ_PesqSisfaz.FieldByName('cnpj').AsString
+        else
+          dm.IBQ_pesquisa.ParamByName('CNPJ_CLIFOR').AsString  :=  CPF_sem_mascara;
+        dm.IBQ_pesquisa.ParamByName('TIPO_LANCTO').AsInteger := 2;
+        dm.IBQ_pesquisa.ParamByName('VLR_SAIDA').AsFloat     := DM.IBQ_PesqSisfaz.FieldByName('valor_baixa').AsFloat;
+        dm.IBQ_pesquisa.ParamByName('CODCONTRIB').AsString   := Edit_CodEmpresa.Text;
+        dm.IBQ_pesquisa.ParamByName('DUPL_NRO').AsInteger    := DM.IBQ_PesqSisfaz.FieldByName('DUPL_NRO').AsInteger;
+        dm.IBQ_pesquisa.ParamByName('DUPL_FLG_DC').AsString  := DM.IBQ_PesqSisfaz.FieldByName('FLG_DC').AsString;
+        dm.IBQ_pesquisa.ParamByName('CC_CUSTO').AsString     := DM.IBQ_PesqSisfaz.FieldByName('CC_NRO').AsString;
+        dm.IBQ_pesquisa.ExecSQL;
+        dm.IBT_LCDPR.CommitRetaining;
+//        SHOWmessage('PASSOU - GRAVOU');
+        dm.IBQ_PesqSisfaz.Next;
+      end;
+    end;
+        SHOWmessage('TERMINOU');
+
+  end;
+
+  if Rg_Tipo.ItemIndex = 1 then
+  begin
+    dm.IBQ_PesqSisfaz.Close;
+    dm.IBQ_PesqSisfaz.SQL.Clear;
+    dm.IBQ_PesqSisfaz.SQL.Add('select a.dt_lancto, a.cc_nro, a.cta_nro, a.faz_nro, ');
+    dm.IBQ_PesqSisfaz.SQL.Add('a.cul_nro, a.valor valor_baixa, A.CC_NRO, b.nome n_fazenda, ');
+    dm.IBQ_PesqSisfaz.SQL.Add('c.nome n_cultura, d.nro DUPL_NRO, d.flg_dc, d.nro_dupl NFISCAL, ');
+    dm.IBQ_PesqSisfaz.SQL.Add('D.NRO_EMPRESA, d.cod_tipo_dupl, e.cnpj, e.nome, ');
+    dm.IBQ_PesqSisfaz.SQL.Add('f.nome n_custo from movcta a, fazenda b, cultura c, ');
+    dm.IBQ_PesqSisfaz.SQL.Add('duplicata d, CLIENTES e, subgrupo_custo f, ');
+    dm.IBQ_PesqSisfaz.SQL.Add('tipo_duplicata g where a.faz_nro = b.codigo and ');
+    dm.IBQ_PesqSisfaz.SQL.Add('a.cul_nro = c.codigo and a.dplb_dupl_flg_dc = d.flg_dc ');
+    dm.IBQ_PesqSisfaz.SQL.Add('and a.dplb_dupl_nro = d.nro and d.clifor = e.codigo and ');
+    dm.IBQ_PesqSisfaz.SQL.Add('a.cc_nro = f.codcusto and d.cod_tipo_dupl = g.codigo and ');
+    dm.IBQ_PesqSisfaz.SQL.Add('d.flg_dc = :flg_dc and g.flg_livro_cx = :livro_cx and ');
+    dm.IBQ_PesqSisfaz.SQL.Add('a.dt_lancto between :dtini and :dtfim ');
+    dm.IBQ_PesqSisfaz.SQL.Add('and d.nro_empresa = :empresa');
+    dm.IBQ_PesqSisfaz.ParamByName('DTINI').AsString := MEdit_DataI.Text;
+    dm.IBQ_PesqSisfaz.ParamByName('DTFIM').AsString := MEdit_DataF.Text;
+    dm.IBQ_PesqSisfaz.ParamByName('EMPRESA').AsString := Edit_CodEmpresa.Text;
+    dm.IBQ_PesqSisfaz.ParamByName('flg_dc').AsString := 'C';
+    dm.IBQ_PesqSisfaz.ParamByName('livro_cx').AsString := 'S';
+    dm.IBQ_PesqSisfaz.Open;
+    dm.IBQ_PesqSisfaz.RecordCount;
+//    icontagem :=     dm.IBQ_PesqSisfaz.RecordCount;
+//    scontagem := inttostr(icontagem);
+//    SHOWmessage(scontagem);
+
+    while not dm.IBQ_PesqSisfaz.Eof do
+    begin
+      icontagem :=     dm.IBQ_PesqSisfaz.RecordCount;
+      DM.IBQ_pesquisa.Close;
+      DM.IBQ_pesquisa.SQL.Clear;
+      DM.IBQ_pesquisa.SQL.Add('SELECT * FROM IMOVEIS WHERE CODFAZ = :CODFAZ');
+      DM.IBQ_pesquisa.ParamByName('CODFAZ').AsInteger := DM.IBQ_PesqSisfaz.FieldByName('faz_nro').AsInteger;
+      DM.IBQ_pesquisa.Open;
+      if dm.IBQ_pesquisa.RecordCount > 0 then
+        icodfaz := DM.IBQ_pesquisa.FieldByName('CODIGO').AsInteger
+      else
+        icodfaz := 1;
+
+      DM.IBQ_pesquisa.Close;
+      DM.IBQ_pesquisa.SQL.Clear;
+      DM.IBQ_pesquisa.SQL.Add('SELECT * FROM CONTA_BANCARIA WHERE NRO_CONTA = :CODCTA');
+      DM.IBQ_pesquisa.ParamByName('CODCTA').AsInteger := DM.IBQ_PesqSisfaz.FieldByName('CTA_NRO').AsInteger;
+      DM.IBQ_pesquisa.Open;
+      if dm.IBQ_pesquisa.RecordCount > 0 then
+        icodcta := DM.IBQ_pesquisa.FieldByName('CODIGO').AsInteger
+      else
+        icodcta := 999;
+
+      DM.IBQ_pesquisa.Close;
+      DM.IBQ_pesquisa.SQL.Clear;
+      DM.IBQ_pesquisa.SQL.Add('SELECT * FROM TIPO_DUPLICATA WHERE COD_SISFAZ = :SISFAZ');
+      DM.IBQ_pesquisa.ParamByName('SISFAZ').AsInteger := DM.IBQ_PesqSisfaz.FieldByName('COD_TIPO_DUPL').AsInteger;
+      DM.IBQ_pesquisa.Open;
+      if dm.IBQ_pesquisa.RecordCount > 0 then
+        icodtp_dupl := DM.IBQ_pesquisa.FieldByName('CODIGO').AsInteger
+      else
+        icodtp_dupl := 6;
+
+      dm.IBQ_pesquisa1.Close;
+      dm.IBQ_pesquisa1.SQL.Clear;
+      dm.IBQ_pesquisa1.SQL.Add('SELECT * FROM MOVTO_LIVRO WHERE DUPL_NRO = :DUPL_NRO AND ');
+      DM.IBQ_pesquisa1.SQL.Add('DUPL_FLG_DC = :DUPL_FLG_DC AND COD_IMOVEL = :IMOVEL AND ');
+      DM.IBQ_pesquisa1.SQL.Add('CC_CUSTO = :CC_CUSTO ');
+      dm.IBQ_pesquisa1.ParamByName('DUPL_NRO').AsInteger    := DM.IBQ_PesqSisfaz.FieldByName('DUPL_NRO').AsInteger;
+      dm.IBQ_pesquisa1.ParamByName('DUPL_FLG_DC').AsString  := DM.IBQ_PesqSisfaz.FieldByName('FLG_DC').AsString;
+      dm.IBQ_pesquisa1.ParamByName('IMOVEL').AsInteger      := icodfaz;
+      dm.IBQ_pesquisa1.ParamByName('CC_CUSTO').AsString     := DM.IBQ_PesqSisfaz.FieldByName('CC_NRO').AsString;
+      DM.IBQ_pesquisa1.Open;
+      if dm.IBQ_pesquisa1.RecordCount > 0 then
+      begin
+//        SHOWmessage('ACHOU DADO REPETIDO NA TABELA');
+        dm.IBQ_pesquisa.Close;
+        dm.IBQ_pesquisa.SQL.Clear;
+        dm.IBQ_pesquisa.SQL.Add('UPDATE MOVTO_LIVRO SET VLR_SAIDA = :VLR_SAIDA ');
+        dm.IBQ_pesquisa.SQL.Add('WHERE CONTROLE = :CONTROLE AND DUPL_NRO = :DUPL_NRO AND ');
+        DM.IBQ_pesquisa.SQL.Add('DUPL_FLG_DC = :DUPL_FLG_DC AND CC_CUSTO = :CC_CUSTO ');
+        dm.IBQ_pesquisa.ParamByName('CONTROLE').AsInteger    := DM.IBQ_pesquisa1.FieldByName('CONTROLE').AsInteger;
+        dm.IBQ_pesquisa.ParamByName('VLR_SAIDA').AsFloat     := DM.IBQ_pesquisa1.FieldByName('VLR_SAIDA').AsFloat +
+                                                                DM.IBQ_PesqSisfaz.FieldByName('valor_baixa').AsFloat;
+        dm.IBQ_pesquisa.ParamByName('DUPL_NRO').AsInteger    := DM.IBQ_pesquisa1.FieldByName('DUPL_NRO').AsInteger;
+        dm.IBQ_pesquisa.ParamByName('DUPL_FLG_DC').AsString  := DM.IBQ_pesquisa1.FieldByName('DUPL_FLG_DC').AsString;
+        dm.IBQ_pesquisa.ParamByName('CC_CUSTO').AsString     := DM.IBQ_pesquisa1.FieldByName('CC_CUSTO').AsString;
+        dm.IBQ_pesquisa.ExecSQL;
+        dm.IBT_LCDPR.CommitRetaining;
+//        SHOWmessage('UPDATE NA TABELA');
+        dm.IBQ_PesqSisfaz.Next;
+      end
+      else
+      begin
+        dm.IBQ_pesquisa.Close;
+        dm.IBQ_pesquisa.SQL.Clear;
+        dm.IBQ_pesquisa.SQL.Add('INSERT INTO MOVTO_LIVRO (CONTROLE, DATA, COD_IMOVEL, ');
+        dm.IBQ_pesquisa.SQL.Add('COD_CONTA, NUM_DOC, TIPO_DOC, HISTORICO, CODCONTRIB, ');
+        dm.IBQ_pesquisa.SQL.Add('TIPO_LANCTO, VLR_ENTRADA, VLR_SAIDA, SALDO_FINAL, ');
+        dm.IBQ_pesquisa.SQL.Add('NAT_SLD_FINAL, CNPJ_CLIFOR, DUPL_NRO, DUPL_FLG_DC, CC_CUSTO ) ');
+        dm.IBQ_pesquisa.SQL.Add('VALUES (:CONTROLE, :DATA, :COD_IMOVEL, :COD_CONTA,');
+        dm.IBQ_pesquisa.SQL.Add(':NUM_DOC, :TIPO_DOC, :HISTORICO, :CODCONTRIB, ');
+        dm.IBQ_pesquisa.SQL.Add(':TIPO_LANCTO, :VLR_ENTRADA, :VLR_SAIDA, :SALDO_FINAL, ');
+        dm.IBQ_pesquisa.SQL.Add(':NAT_SLD_FINAL, :CNPJ_CLIFOR, :DUPL_NRO, :DUPL_FLG_DC, :CC_CUSTO) ');
+        dm.IBQ_pesquisa.ParamByName('CONTROLE').AsInteger    := 0;
+        dm.IBQ_pesquisa.ParamByName('DATA').AsDateTime       := DM.IBQ_PesqSisfaz.FieldByName('dt_lancto').AsDateTime;
+        dm.IBQ_pesquisa.ParamByName('COD_IMOVEL').AsInteger  := icodfaz;
+        DM.IBQ_pesquisa.ParamByName('COD_CONTA').AsInteger   := icodcta;
+        dm.IBQ_pesquisa.ParamByName('NUM_DOC').AsString      := DM.IBQ_PesqSisfaz.FieldByName('NFISCAL').AsString;
+        dm.IBQ_pesquisa.ParamByName('TIPO_DOC').AsInteger    := icodtp_dupl;
+        dm.IBQ_pesquisa.ParamByName('HISTORICO').AsString    := DM.IBQ_PesqSisfaz.FieldByName('n_custo').AsString;
+        if dm.IBQ_PesqSisfaz.FieldByName('CNPJ').AsString <> '' then
+          dm.IBQ_pesquisa.ParamByName('CNPJ_CLIFOR').AsString  := DM.IBQ_PesqSisfaz.FieldByName('cnpj').AsString
+        else
+          dm.IBQ_pesquisa.ParamByName('CNPJ_CLIFOR').AsString  :=  CPF_sem_mascara;
+        dm.IBQ_pesquisa.ParamByName('TIPO_LANCTO').AsInteger := 2;
+        dm.IBQ_pesquisa.ParamByName('VLR_SAIDA').AsFloat     := DM.IBQ_PesqSisfaz.FieldByName('valor_baixa').AsFloat;
+        dm.IBQ_pesquisa.ParamByName('CODCONTRIB').AsString   := Edit_CodEmpresa.Text;
+        dm.IBQ_pesquisa.ParamByName('DUPL_NRO').AsInteger    := DM.IBQ_PesqSisfaz.FieldByName('DUPL_NRO').AsInteger;
+        dm.IBQ_pesquisa.ParamByName('DUPL_FLG_DC').AsString  := DM.IBQ_PesqSisfaz.FieldByName('FLG_DC').AsString;
+        dm.IBQ_pesquisa.ParamByName('CC_CUSTO').AsString     := DM.IBQ_PesqSisfaz.FieldByName('CC_NRO').AsString;
+        dm.IBQ_pesquisa.ExecSQL;
+        dm.IBT_LCDPR.CommitRetaining;
+//        SHOWmessage('PASSOU - GRAVOU');
+        dm.IBQ_PesqSisfaz.Next;
+      end;
+    end;
+  end;
+end;
+
+procedure TLCD_0203.bbtn_pesquisarClick(Sender: TObject);
+begin
+//  if Rg_Tipo.ItemIndex = 0 then
+//  begin
+    dm.IBQ_PesqSisfaz.Close;
+    dm.IBQ_PesqSisfaz.SQL.Clear;
+    dm.IBQ_PesqSisfaz.SQL.Add('select a.dt_lancto, a.cc_nro, a.cta_nro, a.faz_nro, ');
+    dm.IBQ_PesqSisfaz.SQL.Add('a.cul_nro, a.valor valor_baixa, b.nome n_fazenda, ');
+    dm.IBQ_PesqSisfaz.SQL.Add('c.nome n_cultura, d.nro, d.flg_dc, d.nro_dupl, ');
+    dm.IBQ_PesqSisfaz.SQL.Add('D.NRO_EMPRESA, d.cod_tipo_dupl, e.cnpj, e.nome, ');
+    dm.IBQ_PesqSisfaz.SQL.Add('f.nome n_custo from movcta a, fazenda b, cultura c, ');
+    dm.IBQ_PesqSisfaz.SQL.Add('duplicata d, fornecedores e, subgrupo_custo f, ');
+    dm.IBQ_PesqSisfaz.SQL.Add('tipo_duplicata g where a.faz_nro = b.codigo and ');
+    dm.IBQ_PesqSisfaz.SQL.Add('a.cul_nro = c.codigo and a.dplb_dupl_flg_dc = d.flg_dc ');
+    dm.IBQ_PesqSisfaz.SQL.Add('and a.dplb_dupl_nro = d.nro and d.clifor = e.codigo and ');
+    dm.IBQ_PesqSisfaz.SQL.Add('a.cc_nro = f.codcusto and d.cod_tipo_dupl = g.codigo and ');
+    dm.IBQ_PesqSisfaz.SQL.Add('d.flg_dc = :flg_dc and g.flg_livro_cx = :livro_cx and ');
+    dm.IBQ_PesqSisfaz.SQL.Add('a.dt_lancto between :dtini and :dtfim ');
+    dm.IBQ_PesqSisfaz.SQL.Add('and d.nro_empresa = :empresa');
+    dm.IBQ_PesqSisfaz.ParamByName('DTINI').AsString := MEdit_DataI.Text;
+    dm.IBQ_PesqSisfaz.ParamByName('DTFIM').AsString := MEdit_DataF.Text;
+    dm.IBQ_PesqSisfaz.ParamByName('EMPRESA').AsString := Edit_CodEmpresa.Text;
+    dm.IBQ_PesqSisfaz.ParamByName('flg_dc').AsString := 'D';
+    dm.IBQ_PesqSisfaz.ParamByName('livro_cx').AsString := 'S';
+    dm.IBQ_PesqSisfaz.Open;
+//  end;
+end;
+
+procedure TLCD_0203.bbtn_sairClick(Sender: TObject);
+begin
+  Close;
+end;
+
+procedure TLCD_0203.Edit_CodEmpresaKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+var i : Integer;
+begin
+  if Key = Vk_Return then
+  begin
+    if Edit_Codempresa.Text = '' then
+    begin
+      Dlg_Contribuinte := TDlg_Contribuinte.Create(Self);
+      if Dlg_Contribuinte.ShowModal = MrOk  then
+      begin
+          Edit_CodEmpresa.Text   := Dlg_Contribuinte.IBQ_Pesquisa.FieldByName('CODIGO').AsString;
+          Edit_Contribuinte.Text := Dlg_Contribuinte.IBQ_Pesquisa.FieldByName('NOME').AsString;
+      end;
+      IF Dlg_Contribuinte.IBQ_Pesquisa.FieldByName('CPF').AsString <> '' THEN
+       // Tirar a Máscara do CNPJ --
+      BEGIN
+       CPF_sem_mascara := '';
+       FOR I := 1 TO LENGTH(Dlg_Contribuinte.IBQ_Pesquisa.FieldByName('CPF').AsString) DO
+         IF Dlg_Contribuinte.IBQ_Pesquisa.FieldByName('CPF').AsString[I] IN ['0'..'9'] THEN
+            CPF_sem_mascara := CPF_sem_mascara + COPY(Dlg_Contribuinte.IBQ_Pesquisa.FieldByName('CPF').AsString, I, 1);
+      END;
+      Dlg_Contribuinte.Free;
+      Rg_Tipo.SetFocus;
+    end
+    else
+    begin
+      dm.IBQ_pesquisa.Close;
+      dm.IBQ_pesquisa.SQL.Add('SELECT * FROM CONTRIBUINTE WHERE CODIGO = :CODIGO');
+      DM.IBQ_pesquisa.ParamByName('CODIGO').AsString := Edit_Codempresa.Text;
+      dm.IBQ_pesquisa.Open;
+      if dm.IBQ_pesquisa.RecordCount > 0 then
+      begin
+          Edit_CodEmpresa.Text := dm.IBQ_Pesquisa.FieldByName('CODIGO').AsString;
+          Edit_Contribuinte.Text := dm.IBQ_Pesquisa.FieldByName('nome').AsString;
+      end;
+      IF dm.IBQ_Pesquisa.FieldByName('CPF').AsString <> '' THEN
+       // Tirar a Máscara do CNPJ --
+      BEGIN
+       CPF_sem_mascara := '';
+       FOR I := 1 TO LENGTH(dm.IBQ_Pesquisa.FieldByName('CPF').AsString) DO
+         IF dm.IBQ_Pesquisa.FieldByName('CPF').AsString[I] IN ['0'..'9'] THEN
+            CPF_sem_mascara := CPF_sem_mascara + COPY(dm.IBQ_Pesquisa.FieldByName('CPF').AsString, I, 1);
+      END;
+
+      Rg_Tipo.SetFocus;
+    end;
+  end;
+end;
+
+procedure TLCD_0203.FormClose(Sender: TObject; var Action: TCloseAction);
+begin
+  bd_SISFAZ.Connected:= false;
+  action:= cafree;
+end;
+
+procedure TLCD_0203.FormCreate(Sender: TObject);
+begin
+  bd_SISFAZ.Params.LoadFromFile('C:\BANCO DE DADOS\sisFAZ.ini');
+  bd_SISFAZ.Connected:= true;
+end;
+
+procedure TLCD_0203.MEdit_DataFKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = Vk_Return then
+  begin
+    if MEdit_DataF.Text = '  /  /    ' then
+       MEdit_DataF.Text := '31/12/9999'
+    else
+    begin
+       try
+         MEdit_DataF.Text := DateToStr(StrToDate(MEdit_DataF.Text));
+       except
+         ShowMessage('A Data Digitada é Inválida...');
+         MEdit_DataF.SetFocus;
+       end;
+    end;
+    Edit_CodEmpresa.SetFocus;
+  end;
+end;
+
+procedure TLCD_0203.MEdit_DataIKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = Vk_Return then
+  begin
+    if MEdit_DataI.Text = '  /  /    ' then
+       MEdit_DataI.Text := '31/12/9999'
+    else
+    begin
+       try
+         MEdit_DataI.Text := DateToStr(StrToDate(MEdit_DataI.Text));
+       except
+         ShowMessage('A Data Digitada é Inválida...');
+         MEdit_DataI.SetFocus;
+       end;
+    end;
+    MEdit_dataF.SetFocus;
+  end;
+end;
+
+end.

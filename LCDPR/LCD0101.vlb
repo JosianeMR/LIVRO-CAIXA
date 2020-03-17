@@ -1,0 +1,10 @@
+﻿[cxDBRG_Situacao]
+LayerNames=
+Visible=True
+
+[Module Settings]
+ModelLayerNames="Ativo ";Inativo;"select codigo from imoveis"
+
+[Ds_ImoveisParc]
+LayerNames="select codigo from imoveis"
+
